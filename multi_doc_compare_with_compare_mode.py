@@ -4,7 +4,7 @@ from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 
-# Load and chunk docs
+
 def load_and_chunk(pdf_path):
     loader = PyPDFLoader(pdf_path)
     docs = loader.load()
@@ -13,13 +13,13 @@ def load_and_chunk(pdf_path):
     return chunks
 
 def main():
-    # Load & chunk each PDF separately
+    
     chunks1 = load_and_chunk(r"C:\Users\kanth\Desktop\multi-document-comparator-agent\data\doc1.pdf")
     chunks2 = load_and_chunk(r"C:\Users\kanth\Desktop\multi-document-comparator-agent\data\doc2.pdf")
 
     embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     
-    # Create separate vector stores per doc
+    
     vectorstore1 = FAISS.from_documents(chunks1, embedding_model)
     vectorstore2 = FAISS.from_documents(chunks2, embedding_model)
 
@@ -30,10 +30,10 @@ def main():
         if query.lower() == "exit":
             break
         
-        # Simple heuristic: if query contains compare/contrast keywords, use comparison mode
+        
         compare_keywords = ["compare", "difference", "contrast", "how about", "which is longer", "which is better"]
         if any(word in query.lower() for word in compare_keywords):
-            # Retrieve top chunks from both docs
+            
             docs1 = vectorstore1.similarity_search(query, k=3)
             docs2 = vectorstore2.similarity_search(query, k=3)
 
@@ -50,8 +50,7 @@ def main():
             print("\nComparison Answer:\n", response)
             print("\n" + "="*50 + "\n")
         else:
-            # Normal single doc retrieval
-            # Search both docs combined by merging chunks
+            
             all_chunks = chunks1 + chunks2
             combined_vectorstore = FAISS.from_documents(all_chunks, embedding_model)
             relevant_docs = combined_vectorstore.similarity_search(query, k=3)

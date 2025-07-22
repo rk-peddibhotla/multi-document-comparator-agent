@@ -1,6 +1,6 @@
 from langgraph import Workflow, CodeNode
 
-# A simple node that returns a greeting
+
 def hello_node():
     return "Hello from LangGraph!"
 

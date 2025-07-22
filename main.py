@@ -1,30 +1,30 @@
 from langchain.agents import initialize_agent
 from langchain_ollama import ChatOllama
 from langchain.tools import Tool
-from tools import get_system_info  # basic function
+from tools import get_system_info  
 
-# Wrap the function to accept a single input string
+
 wrapped_system_info = lambda _: get_system_info()
 
-# Define the tool properly
+
 tools = [
     Tool(
         name="get_system_info",
         func=wrapped_system_info,
         description="Returns system info like OS, CPU, RAM.",
-        return_direct=True  # important for final answer to not conflict with tool call
+        return_direct=True  
     )
 ]
 
-# Load the LLM
+
 llm = ChatOllama(model="gemma:2b")
 
-# Initialize the agent
+
 agent = initialize_agent(
     tools=tools,
     llm=llm,
     agent="zero-shot-react-description",
-    verbose=False,  # Clean output
+    verbose=False,  
     handle_parsing_errors=True
 )
 
